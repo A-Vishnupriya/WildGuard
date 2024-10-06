@@ -1,0 +1,383 @@
+<!---Changes Made:
+Semantic HTML5: Used appropriate HTML5 elements like <header>, <footer>, <section>, etc., to improve document structure.
+
+CSS Enhancements: Organized CSS styles with media queries for responsive design and improved button hover effects.
+
+Accessibility: Added alt attributes to images for screen readers and improved button accessibility.
+
+Responsive Design: Implemented a flexible grid layout for animal cards that adjusts based on screen size.
+
+Modal Functionality: Improved modal design with clear closing mechanisms and processing feedback.--->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WildGuard - Donate to Protect Wildlife</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Separate CSS file for better organization -->
+    <style>
+        /* ----- CSS Styles ----- */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f0f4f5;
+            line-height: 1.6;
+        }
+        header, footer {
+            background-color: #2d6a4f;
+            color: #ffffff;
+            padding: 20px 0;
+        }
+        header h1, footer p {
+            text-align: center;
+            margin: 0;
+        }
+        nav {
+            text-align: center;
+            margin-top: 10px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: inline-block;
+        }
+        nav li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #d9d9d9;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px; /* Max width for larger screens */
+            margin: 0 auto;
+        }
+        .section {
+            margin: 40px 0;
+        }
+        .section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        /* Grid layout for animal cards */
+        .animal-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .animal-card {
+            background-color: #ffffff;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex: 1 1 22%;
+            min-width: 250px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .animal-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .animal-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+        .animal-card:hover img {
+            filter: brightness(0.9);
+        }
+        .animal-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .animal-info h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            height: 12px;
+        }
+        .progress {
+            height: 100%;
+            background-color: #2d6a4f;
+            width: 0%;
+        }
+        .animal-info p {
+            font-size: 14px;
+            margin: 5px 0;
+            flex-grow: 1;
+        }
+        .animal-info button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #2d6a4f;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .animal-info button:hover {
+            background-color: #1b4d38; /* Darker shade on hover */
+        }
+        .ngo-list {
+            list-style: none;
+            padding: 0;
+        }
+        .ngo-item {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ngo-item h3 {
+            margin-top: 0;
+        }
+        .ngo-item button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #2d6a4f;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .ngo-item button:hover {
+            background-color: #1b4d38; /* Darker shade on hover */
+        }
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px; /* Could be more or less, depending on screen size */
+            border-radius: 5px;
+            position: relative;
+        }
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            cursor: pointer;
+        }
+        .donation-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .donation-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+        .donation-form button {
+            width: 100%;
+            padding: 15px;
+            background-color: #2d6a4f;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .donation-form button:hover {
+            background-color: #1b4d38; /* Darker shade on hover */
+        }
+        @media (max-width: 1024px) {
+            .animal-card {
+                flex: 1 1 30%; /* Adjusts width in larger devices */
+            }
+        }
+        @media (max-width: 768px) {
+            .animal-card {
+                flex: 1 1 45%; /* Adjusts width in medium devices */
+            }
+        }
+        @media (max-width: 500px) {
+            .animal-card {
+                flex: 1 1 100%; /* Full width in smaller devices */
+            }
+        }
+        /* Background image */
+        .backimg {
+            background-image: url("assets/images/animals.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            min-height: 780px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>WildGuard</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Animals</a></li>
+                    <li><a href="#">Conservation</a></li>
+                    <li><a href="#">Donate</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="section" id="animal-section">
+            <h2>Support Our Animals</h2>
+            <div class="animal-grid" id="animal-cards">
+                <!-- Animal cards populated by JavaScript -->
+            </div>
+        </section>
+
+        <section class="section" id="ngo-section">
+            <h2>Animal Health Care NGOs</h2>
+            <ul class="ngo-list">
+                <li class="ngo-item">
+                    <h3>Wildlife Conservation Society</h3>
+                    <p>Dedicated to saving wildlife and wild places worldwide through science, conservation action, education, and inspiring people to value nature.</p>
+                    <button onclick="window.open('https://www.wcs.org', '_blank')">Visit Website</button>
+                </li>
+                <li class="ngo-item">
+                    <h3>WWF - World Wildlife Fund</h3>
+                    <p>Working in 100 countries, WWF helps communities, businesses, and governments tackle global challenges to conserve nature for future generations.</p>
+                    <button onclick="window.open('https://www.worldwildlife.org', '_blank')">Visit Website</button>
+                </li>
+                <li class="ngo-item">
+                    <h3>International Animal Rescue</h3>
+                    <p>Rescuing animals in need and providing them with rehabilitation and care before releasing them back into the wild.</p>
+                    <button onclick="window.open('https://www.internationalanimalrescue.org', '_blank')">Visit Website</button>
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Modal for donations -->
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Donate to WildGuard</h2>
+            <form class="donation-form" id="donation-form" onsubmit="processDonation(event)">
+                <label for="donor-name">Name:</label>
+                <input type="text" id="donor-name" name="donor-name" required>
+
+                <label for="donor-email">Email:</label>
+                <input type="email" id="donor-email" name="donor-email" required>
+
+                <label for="donation-amount">Amount:</label>
+                <input type="number" id="donation-amount" name="donation-amount" required>
+
+                <button type="submit">Donate</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 WildGuard. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Animal data
+        const animals = [
+            { name: "African Elephant", image: "assets/images/elephant.jpg", goal: 10000, raised: 3000 },
+            { name: "Bengal Tiger", image: "assets/images/tiger.jpg", goal: 15000, raised: 5000 },
+            { name: "Giant Panda", image: "assets/images/panda.jpg", goal: 12000, raised: 7000 },
+            { name: "Snow Leopard", image: "assets/images/leopard.jpg", goal: 8000, raised: 2000 }
+        ];
+
+        // Populate animal cards
+        const animalCardsContainer = document.getElementById('animal-cards');
+        animals.forEach(animal => {
+            const card = document.createElement('div');
+            card.classList.add('animal-card');
+            card.innerHTML = `
+                <img src="${animal.image}" alt="${animal.name}">
+                <div class="animal-info">
+                    <h3>${animal.name}</h3>
+                    <p>Goal: $${animal.goal} | Raised: $${animal.raised}</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${(animal.raised / animal.goal) * 100}%;"></div>
+                    </div>
+                    <button onclick="openModal('${animal.name}')">Donate</button>
+                </div>
+            `;
+            animalCardsContainer.appendChild(card);
+        });
+
+        // Open donation modal
+        function openModal(animalName) {
+            document.getElementById('donationModal').style.display = "block";
+        }
+
+        // Close donation modal
+        function closeModal() {
+            document.getElementById('donationModal').style.display = "none";
+        }
+
+        // Process donation
+        function processDonation(event) {
+            event.preventDefault();
+            // Donation processing logic here
+            alert("Thank you for your donation!");
+            closeModal();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('donationModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
